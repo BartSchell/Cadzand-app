@@ -1,0 +1,60 @@
+import { db } from "./firebase-config.js";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  doc,
+  updateDoc,
+  deleteDoc,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+const todoRef = collection(db, "todos");
+const form = document.getElementById("todo-form");
+const input = document.getElementById("todo-input");
+const assigneeInput = document.getElementById("todo-assignee");
+const list = document.getElementById("todo-list");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  await addDoc(todoRef, {
+    text,
+    assignee: assigneeInput.value.trim(),
+    done: false,
+    createdAt: serverTimestamp(),
+  });
+  input.value = "";
+  assigneeInput.value = "";
+});
+
+onSnapshot(query(todoRef, orderBy("createdAt", "desc")), (snapshot) => {
+  list.innerHTML = "";
+  snapshot.forEach((docSnap) => {
+    const item = docSnap.data();
+    const li = document.createElement("li");
+    li.className = item.done ? "done" : "";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = !!item.done;
+    checkbox.addEventListener("change", () => {
+      updateDoc(doc(db, "todos", docSnap.id), { done: checkbox.checked });
+    });
+
+    const span = document.createElement("span");
+    span.className = "item-text";
+    span.textContent = item.assignee ? `${item.text} (${item.assignee})` : item.text;
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "delete-btn";
+    delBtn.textContent = "🗑️";
+    delBtn.addEventListener("click", () => deleteDoc(doc(db, "todos", docSnap.id)));
+
+    li.append(checkbox, span, delBtn);
+    list.appendChild(li);
+  });
+});

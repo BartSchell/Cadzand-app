@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Cadzand Huisje</title>
+  <meta name="description" content="Family vacation home app for Cadzand" />
+  <meta name="theme-color" content="#1e88a8" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="icon" href="icons/icon.svg" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>🏖️ Cadzand Huisje</h1>
+  </header>
+
+  <main id="app">
+
+    <!-- CALENDAR TAB -->
+    <section id="tab-calendar" class="tab-panel active">
+      <h2>📅 Calendar</h2>
+      <form id="booking-form" class="card-form">
+        <input type="text" id="booking-name" placeholder="Your name" required />
+        <label>Arrival <input type="date" id="booking-start" required /></label>
+        <label>Departure <input type="date" id="booking-end" required /></label>
+        <button type="submit">Book stay</button>
+      </form>
+      <div id="booking-warning" class="warning hidden">⚠️ This overlaps with another booking!</div>
+      <ul id="booking-list" class="item-list"></ul>
+    </section>
+
+    <!-- SHOPPING TAB -->
+    <section id="tab-shopping" class="tab-panel">
+      <h2>🛒 Shopping List</h2>
+      <form id="shopping-form" class="card-form">
+        <input type="text" id="shopping-input" placeholder="Add an item..." required />
+        <button type="submit">Add</button>
+      </form>
+      <ul id="shopping-list" class="item-list checklist"></ul>
+    </section>
+
+    <!-- TODO TAB -->
+    <section id="tab-todo" class="tab-panel">
+      <h2>✅ To-Do List</h2>
+      <form id="todo-form" class="card-form">
+        <input type="text" id="todo-input" placeholder="What needs doing?" required />
+        <input type="text" id="todo-assignee" placeholder="Assign to (optional)" />
+        <button type="submit">Add</button>
+      </form>
+      <ul id="todo-list" class="item-list checklist"></ul>
+    </section>
+
+    <!-- CLEANING TAB -->
+    <section id="tab-cleaning" class="tab-panel">
+      <h2>🧹 Cleaning Schedule</h2>
+      <form id="cleaning-form" class="card-form">
+        <input type="text" id="cleaning-name" placeholder="Who cleaned?" required />
+        <input type="date" id="cleaning-date" required />
+        <input type="text" id="cleaning-notes" placeholder="What did they do? (optional)" />
+        <button type="submit">Log cleaning</button>
+      </form>
+
+      <h3>🏆 Leaderboard</h3>
+      <ol id="cleaning-leaderboard" class="item-list"></ol>
+
+      <h3>History</h3>
+      <ul id="cleaning-history" class="item-list"></ul>
+    </section>
+
+    <!-- WEATHER TAB -->
+    <section id="tab-weather" class="tab-panel">
+      <h2>🌊 Weather &amp; Wind</h2>
+      <div id="weather-current" class="weather-card">Loading weather...</div>
+      <div id="kite-status" class="kite-card">Checking kite conditions...</div>
+      <h3>Wind forecast (next 24h)</h3>
+      <div id="wind-forecast" class="wind-forecast"></div>
+    </section>
+
+  </main>
+
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="calendar">📅<span>Calendar</span></button>
+    <button class="tab-btn" data-tab="shopping">🛒<span>Shopping</span></button>
+    <button class="tab-btn" data-tab="todo">✅<span>To-Do</span></button>
+    <button class="tab-btn" data-tab="cleaning">🧹<span>Cleaning</span></button>
+    <button class="tab-btn" data-tab="weather">🌬️<span>Weather</span></button>
+  </nav>
+
+  <script src="js/tabs.js"></script>
+  <script type="module" src="js/shopping.js"></script>
+  <script type="module" src="js/todo.js"></script>
+  <script type="module" src="js/cleaning.js"></script>
+  <script type="module" src="js/calendar.js"></script>
+  <script type="module" src="js/weather.js"></script>
+</body>
+</html>
