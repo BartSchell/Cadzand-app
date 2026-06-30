@@ -1,134 +1,66 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>De Remise</title>
-  <meta name="description" content="App voor het vakantiehuis aan de Prinsestraat 22 in Cadzand" />
-  <meta name="theme-color" content="#5b32ad" />
+# De Remise
 
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icons/icon.svg" />
-  <link rel="icon" href="icons/icon.svg" />
+Een app voor het vakantiehuis aan de Prinsestraat 22 in Cadzand. Iedereen in de familie kan de app openen op zijn/haar telefoon om de kalender, boodschappenlijst, to-do lijst, schoonmaakrooster, het weer/windvoorspelling en huisinfo (wifi, etc.) te bekijken.
 
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body>
+Dit README is geschreven voor Bart, die nieuw is met programmeren. Loop het stap voor stap door — neem de tijd, en het is helemaal prima om met vragen terug te gaan naar Claude Code.
 
-  <header class="app-header">
-    <h1>De Remise</h1>
-  </header>
+## Wat er al gebouwd is
 
-  <main id="app">
+- `index.html` — het skelet van de app (de tabs die je ziet: Kalender, Boodschappen, To-do, Schoonmaak, Weer, Info)
+- `css/styles.css` — de styling (kleuren, ruimte, hoe dingen eruitzien)
+- `js/` — de logica (één bestand per functie)
+- `manifest.json` + `sw.js` — wat de app installeerbaar maakt op een homescreen (een "PWA")
 
-    <!-- CALENDAR TAB -->
-    <section id="tab-calendar" class="tab-panel active">
-      <h2>Kalender</h2>
+Alles werkt, **behalve** dat de app nog niet weet bij welk Firebase-project de gegevens opgeslagen moeten worden. Als dat al is ingesteld (zoals bij de vorige versie van deze app), hoef je dit niet opnieuw te doen — `js/firebase-config.js` blijft ongewijzigd.
 
-      <div class="calendar-nav">
-        <button type="button" id="cal-prev" class="icon-btn" aria-label="Vorige maand"></button>
-        <span id="cal-month-label"></span>
-        <button type="button" id="cal-next" class="icon-btn" aria-label="Volgende maand"></button>
-      </div>
+## Stap 1: Firebase project (indien nog niet gedaan)
 
-      <div class="cal-weekdays">
-        <span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span>
-      </div>
-      <div id="calendar-grid" class="cal-grid"></div>
+1. Ga naar https://console.firebase.google.com en log in met je Google-account.
+2. Klik op **"Add project"**, geef het een naam, en maak het aan (Google Analytics kan je overslaan).
+3. Klik op het **"</>"** (web) icoon om een webapp toe te voegen. Geef het een bijnaam en klik op **Register app**.
+4. Kopieer de `firebaseConfig` waarden naar `js/firebase-config.js` in dit project.
 
-      <div id="calendar-day-panel" class="day-panel"></div>
+## Stap 2: Firestore (de gedeelde database)
 
-      <button type="button" id="cal-add-toggle" class="add-toggle"></button>
+1. In de Firebase Console, klik op **Build → Firestore Database**.
+2. Klik op **Create database**, kies een locatie dichtbij (bijv. `europe-west`), en start in **test mode**.
+3. Ga naar de **Rules** tab en plak de inhoud van `firestore.rules` uit dit project, klik daarna op **Publish**.
 
-      <form id="booking-form" class="card-form">
-        <input type="text" id="booking-name" placeholder="Jouw naam" required />
-        <label>Aankomst <input type="date" id="booking-start" required /></label>
-        <label>Vertrek <input type="date" id="booking-end" required /></label>
-        <label>Aantal personen <input type="number" id="booking-people" min="1" max="20" placeholder="bijv. 4" /></label>
-        <label>Aantal kamers (max 4) <input type="number" id="booking-rooms" min="1" max="4" placeholder="bijv. 2" /></label>
-        <button type="submit">Verblijf boeken</button>
-      </form>
-      <div id="booking-warning" class="warning hidden">Let op: dit overlapt met een ander verblijf!</div>
-    </section>
+   Dit maakt de database open voor iedereen met de app-link — prima voor een kleine, besloten familie-app.
 
-    <!-- SHOPPING TAB -->
-    <section id="tab-shopping" class="tab-panel">
-      <h2>Boodschappen</h2>
-      <form id="shopping-form" class="card-form">
-        <input type="text" id="shopping-input" placeholder="Iets toevoegen..." required />
-        <button type="submit">Toevoegen</button>
-      </form>
-      <ul id="shopping-list" class="item-list checklist"></ul>
-    </section>
+## Stap 3: Deployen naar Netlify
 
-    <!-- TODO TAB -->
-    <section id="tab-todo" class="tab-panel">
-      <h2>To-do lijst</h2>
-      <form id="todo-form" class="card-form">
-        <input type="text" id="todo-input" placeholder="Wat moet er gebeuren?" required />
-        <input type="text" id="todo-assignee" placeholder="Toewijzen aan (optioneel)" />
-        <button type="submit">Toevoegen</button>
-      </form>
-      <ul id="todo-list" class="item-list checklist"></ul>
-    </section>
+1. Push dit project naar je GitHub repository.
+2. Ga naar https://app.netlify.com en log in (kan met GitHub).
+3. Klik op **Add new site → Import an existing project**, kies GitHub, selecteer deze repository.
+4. Kies de juiste branch, laat de build-instellingen leeg (geen build-stap nodig) en klik op **Deploy**.
+5. Netlify geeft je een URL zoals `https://de-remise.netlify.app`. Dat is de link om met de familie te delen!
 
-    <!-- CLEANING TAB -->
-    <section id="tab-cleaning" class="tab-panel">
-      <h2>Schoonmaakrooster</h2>
-      <form id="cleaning-form" class="card-form">
-        <input type="text" id="cleaning-name" placeholder="Wie heeft schoongemaakt?" required />
-        <input type="date" id="cleaning-date" required />
-        <input type="text" id="cleaning-notes" placeholder="Wat is er gedaan? (optioneel)" />
-        <button type="submit">Toevoegen</button>
-      </form>
+Elke keer dat nieuwe code naar GitHub wordt gepusht, deployt Netlify automatisch opnieuw.
 
-      <h3>Klassement</h3>
-      <ol id="cleaning-leaderboard" class="item-list"></ol>
+## Stap 4: Installeren op je telefoon
 
-      <h3>Geschiedenis</h3>
-      <ul id="cleaning-history" class="item-list"></ul>
-    </section>
+1. Open de Netlify-URL op je telefoon in Safari (iPhone) of Chrome (Android).
+2. iPhone: tik op het deel-icoon → "Zet op beginscherm" ("Add to Home Screen").
+   Android: tik op het menu (⋮) → "Toevoegen aan startscherm" / "App installeren".
+3. Je hebt nu een "De Remise" icoon op je homescreen, net als elke andere app!
 
-    <!-- WEATHER TAB -->
-    <section id="tab-weather" class="tab-panel">
-      <h2>Weer &amp; Wind</h2>
-      <div id="weather-now" class="now-card">Weer laden...</div>
-      <div id="kite-status" class="kite-card">Kitecondities controleren...</div>
+## Hoe de functies werken
 
-      <h3>Komende uren</h3>
-      <div id="wind-forecast" class="wind-forecast"></div>
+- **Kalender** — een echte maandweergave. Tik op een dag om te zien wie er verblijft, of tik op "Verblijf toevoegen" om je naam, aankomst/vertrek, aantal personen en aantal kamers (max 4) toe te voegen. Bij overlap met een ander verblijf verschijnt een waarschuwing.
+- **Boodschappen** — items toevoegen, aanvinken als gekocht, verwijderen als het niet meer nodig is.
+- **To-do lijst** — huistaken toevoegen, optioneel toewijzen aan een familielid, afvinken als het klaar is.
+- **Schoonmaakrooster** — loggen wie wanneer heeft schoongemaakt en wat er is gedaan. Er is een klassement (wie het vaakst heeft schoongemaakt) en een volledige geschiedenis.
+- **Weer & Wind** — actueel weer en een 5-daagse vooruitblik via de gratis [Open-Meteo](https://open-meteo.com) API (geen account of API-key nodig), plus een uurlijkse windvoorspelling met kite-conditie:
+  - Top conditie — wind 14–30 knopen, schuin/op de kust aanwakkerend
+  - Misschien — te licht (10–14 kn) of stevig (30–38 kn), goed opletten
+  - Niet veilig — wind onder 10 kn (te weinig), boven 38 kn, of aflandige wind (zuidelijke richting, die je de zee op kan blazen)
 
-      <h3>5-daagse verwachting</h3>
-      <div id="weather-daily" class="daily-list"></div>
-    </section>
+  Dit is een richtlijn, geen vervanging voor het zelf checken van de echte omstandigheden op het strand.
+- **Info Prinsestraat 22** — wifi naam/wachtwoord, adres, locatie stoppenkast/hoofdkraan, vuilnisdag, noodnummers en in-/uitchecknotities. Tik op het potlood-icoon om te bewerken; iedereen die de app gebruikt ziet de update direct.
 
-    <!-- INFO TAB -->
-    <section id="tab-info" class="tab-panel">
-      <div class="info-header">
-        <h2>Info Prinsestraat 22</h2>
-        <button type="button" id="info-edit-btn" class="icon-btn" aria-label="Bewerken"></button>
-      </div>
-      <div id="info-view" class="info-view"></div>
-      <form id="info-form" class="card-form"></form>
-    </section>
+## Notities voor toekomstige aanpassingen
 
-  </main>
-
-  <nav class="tab-bar">
-    <button class="tab-btn active" data-tab="calendar" data-icon="calendar"><span>Kalender</span></button>
-    <button class="tab-btn" data-tab="shopping" data-icon="cart"><span>Boodschappen</span></button>
-    <button class="tab-btn" data-tab="todo" data-icon="check"><span>To-do</span></button>
-    <button class="tab-btn" data-tab="cleaning" data-icon="broom"><span>Schoonmaak</span></button>
-    <button class="tab-btn" data-tab="weather" data-icon="wind"><span>Weer</span></button>
-    <button class="tab-btn" data-tab="info" data-icon="info"><span>Info</span></button>
-  </nav>
-
-  <script type="module" src="js/tabs.js"></script>
-  <script type="module" src="js/shopping.js"></script>
-  <script type="module" src="js/todo.js"></script>
-  <script type="module" src="js/cleaning.js"></script>
-  <script type="module" src="js/calendar.js"></script>
-  <script type="module" src="js/weather.js"></script>
-  <script type="module" src="js/info.js"></script>
-</body>
-</html>
+- Gedeelde data staat in Firestore collections: `bookings`, `shopping`, `todos`, `cleaning`, `info`.
+- Er is geen inlogsysteem — iedereen deelt dezelfde data, herkenbaar aan de naam die ze invoeren. Dat houdt het simpel voor een kleine familiegroep.
+- De app werkt offline voor het app-skelet (dankzij de service worker), maar live data (kalender, lijsten, weer) heeft internet nodig om te laden en te synchroniseren.
