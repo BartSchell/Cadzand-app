@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#1e88a8"/>
-  <rect y="320" width="512" height="192" fill="#f4e9d8"/>
-  <circle cx="380" cy="120" r="60" fill="#f4a93c"/>
-  <text x="50%" y="430" font-size="200" text-anchor="middle" font-family="Arial, sans-serif">🏖️</text>
-</svg>
