@@ -1,7 +1,10 @@
-[build]
-  publish = "."
-
-[[headers]]
-  for = "/sw.js"
-  [headers.values]
-    Cache-Control = "no-cache"
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Open read/write for the family - no login required.
+    // Good enough for a small private family app shared by a link only you control.
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

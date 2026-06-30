@@ -1,0 +1,569 @@
+:root {
+  --purple: #5b32ad;
+  --purple-light: #7c4fd6;
+  --purple-pale: #efe8fb;
+  --bg: #f6f4fb;
+  --text: #2c2a33;
+  --text-soft: #6b6877;
+  --card-bg: #ffffff;
+  --good: #2e9e5b;
+  --maybe: #d99a1c;
+  --poor: #c44545;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: 78px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-header {
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple-light) 100%);
+  color: white;
+  padding: 18px 16px;
+  text-align: center;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+#app {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+  animation: fadeUp 0.25s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+  color: var(--purple);
+  font-size: 1.15rem;
+  margin: 4px 0 14px;
+}
+
+h3 {
+  font-size: 0.95rem;
+  color: var(--text-soft);
+  margin: 18px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Icons */
+.icon, .weather-icon {
+  display: inline-flex;
+  width: 1.3em;
+  height: 1.3em;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.icon svg, .weather-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.inline-icon { width: 1em; height: 1em; margin-right: 4px; }
+.small-icon { width: 1.1em; height: 1.1em; margin: 2px auto; color: var(--text-soft); }
+.kite-icon { width: 2em; height: 2em; flex-shrink: 0; }
+
+/* Forms / cards */
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--card-bg);
+  padding: 16px;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 10px rgba(91, 50, 173, 0.08);
+  margin-bottom: 16px;
+  transition: opacity 0.2s ease;
+}
+
+.card-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 4px;
+  color: var(--text-soft);
+}
+
+.card-form input {
+  padding: 10px;
+  border: 1px solid #e1ddec;
+  border-radius: 9px;
+  font-size: 1rem;
+  background: #fbfafe;
+}
+
+.card-form input:focus {
+  outline: 2px solid var(--purple-light);
+  outline-offset: 1px;
+}
+
+.card-form button {
+  padding: 11px;
+  border: none;
+  border-radius: 9px;
+  background: var(--purple);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+
+.card-form button:active {
+  transform: scale(0.97);
+  background: var(--purple-light);
+}
+
+#booking-form, #info-form {
+  display: none;
+}
+#booking-form.open, #info-form.open {
+  display: flex;
+  animation: fadeUp 0.2s ease;
+}
+
+.add-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 11px;
+  margin-bottom: 12px;
+  border: 1.5px dashed var(--purple-light);
+  border-radius: 9px;
+  background: var(--purple-pale);
+  color: var(--purple);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.add-toggle .icon { width: 1.1em; height: 1.1em; }
+
+.icon-btn {
+  background: none;
+  border: none;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--purple);
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.icon-btn:active {
+  background: var(--purple-pale);
+}
+
+/* Lists */
+.item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-list li {
+  background: var(--card-bg);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(91, 50, 173, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  animation: fadeUp 0.2s ease;
+}
+
+.checklist li.done span.item-text {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.item-text {
+  flex: 1;
+}
+
+.item-meta {
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  width: 1.4em;
+  height: 1.4em;
+  cursor: pointer;
+  color: var(--poor);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.delete-btn:active {
+  opacity: 1;
+}
+
+.rank-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--purple-pale);
+  color: var(--purple);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rank-badge.rank-1 { background: #f4d35e; color: #6b4d00; }
+.rank-badge.rank-2 { background: #d9d9d9; color: #555; }
+.rank-badge.rank-3 { background: #e3b08a; color: #6b3a14; }
+
+.warning {
+  background: #fde2e2;
+  color: var(--poor);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.warning.hidden {
+  display: none;
+}
+
+.empty-hint {
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+/* Calendar */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  margin-bottom: 4px;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 12px;
+}
+
+.cal-cell {
+  aspect-ratio: 1;
+  border: none;
+  background: var(--card-bg);
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.cal-cell.empty {
+  background: transparent;
+  visibility: hidden;
+}
+
+.cal-cell.today {
+  font-weight: 700;
+  color: var(--purple);
+  border: 1.5px solid var(--purple-light);
+}
+
+.cal-cell.selected {
+  background: var(--purple);
+  color: white;
+}
+
+.cal-dots {
+  display: flex;
+  gap: 2px;
+}
+
+.cal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--purple-light);
+}
+
+.cal-cell.selected .cal-dot {
+  background: white;
+}
+
+.day-panel {
+  background: var(--purple-pale);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.day-panel h3 {
+  margin-top: 0;
+  color: var(--purple);
+  text-transform: capitalize;
+}
+
+.day-panel .item-list li {
+  background: white;
+}
+
+/* Weather */
+.now-card {
+  background: linear-gradient(160deg, var(--purple) 0%, var(--purple-light) 100%);
+  color: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+
+.now-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.now-place {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.now-temp {
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.now-desc {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.now-icon {
+  width: 64px;
+  height: 64px;
+}
+
+.now-wind {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+}
+
+.kite-card {
+  background: var(--card-bg);
+  padding: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  box-shadow: 0 2px 10px rgba(91, 50, 173, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kite-card.good { border-left: 5px solid var(--good); }
+.kite-card.maybe { border-left: 5px solid var(--maybe); }
+.kite-card.poor { border-left: 5px solid var(--poor); }
+.kite-card.good .kite-icon { color: var(--good); }
+.kite-card.maybe .kite-icon { color: var(--maybe); }
+.kite-card.poor .kite-icon { color: var(--poor); }
+
+.wind-forecast {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+.wind-hour {
+  flex: 0 0 auto;
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  min-width: 60px;
+  font-size: 0.78rem;
+  box-shadow: 0 1px 6px rgba(91, 50, 173, 0.06);
+  border-bottom: 3px solid transparent;
+}
+
+.wind-hour.good { border-bottom-color: var(--good); }
+.wind-hour.maybe { border-bottom-color: var(--maybe); }
+.wind-hour.poor { border-bottom-color: var(--poor); }
+
+.daily-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.day-row {
+  display: grid;
+  grid-template-columns: 90px 36px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  background: var(--card-bg);
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(91, 50, 173, 0.06);
+}
+
+.day-name {
+  text-transform: capitalize;
+  font-size: 0.88rem;
+}
+
+.day-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.day-wind {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+}
+
+.day-temps {
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.day-temps strong {
+  color: var(--text);
+}
+
+/* Info tab */
+.info-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.info-row {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 1px 6px rgba(91, 50, 173, 0.06);
+}
+
+.info-row .icon {
+  color: var(--purple);
+  margin-top: 2px;
+}
+
+.info-label {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Tab bar */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background: white;
+  border-top: 1px solid #ece8f5;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 8px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #9b96aa;
+  cursor: pointer;
+  transition: color 0.15s ease, transform 0.1s ease;
+}
+
+.tab-btn .icon {
+  width: 1.4em;
+  height: 1.4em;
+}
+
+.tab-btn span {
+  font-size: 0.66rem;
+}
+
+.tab-btn.active {
+  color: var(--purple);
+}
+
+.tab-btn:active {
+  transform: scale(0.93);
+}

@@ -1,80 +1,134 @@
-# 🏖️ Cadzand Huisje
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>De Remise</title>
+  <meta name="description" content="App voor het vakantiehuis aan de Prinsestraat 22 in Cadzand" />
+  <meta name="theme-color" content="#5b32ad" />
 
-A simple app for the family vacation home in Cadzand. Everyone in the family can open it on their phone to see the calendar, shopping list, to-do list, cleaning schedule, and the wind forecast for kitesurfing.
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="icon" href="icons/icon.svg" />
 
-This README is written for Bart, who is brand new to coding. Go through it step by step — don't rush, and it's totally fine to come back to Claude Code with questions at any point.
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
 
-## What's already built
+  <header class="app-header">
+    <h1>De Remise</h1>
+  </header>
 
-- `index.html` — the skeleton of the app (the tabs you see: Calendar, Shopping, To-Do, Cleaning, Weather)
-- `css/styles.css` — the paint job (colors, spacing, how things look)
-- `js/` — the brains (one file per feature)
-- `manifest.json` + `sw.js` — what makes this installable on a phone home screen (a "PWA")
+  <main id="app">
 
-Everything works, **except** the app doesn't yet know which Firebase project to save data to. That's the one thing left to set up — steps below.
+    <!-- CALENDAR TAB -->
+    <section id="tab-calendar" class="tab-panel active">
+      <h2>Kalender</h2>
 
-## Step 1: Create a free Firebase project
+      <div class="calendar-nav">
+        <button type="button" id="cal-prev" class="icon-btn" aria-label="Vorige maand"></button>
+        <span id="cal-month-label"></span>
+        <button type="button" id="cal-next" class="icon-btn" aria-label="Volgende maand"></button>
+      </div>
 
-1. Go to https://console.firebase.google.com and sign in with your Google account.
-2. Click **"Add project"**, name it something like `cadzand-huisje`, and create it (you can skip Google Analytics).
-3. Once the project opens, click the **"</>"** (web) icon to add a web app. Give it a nickname like "Cadzand App" and click **Register app**.
-4. Firebase will show you a code block that looks like this:
+      <div class="cal-weekdays">
+        <span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span>
+      </div>
+      <div id="calendar-grid" class="cal-grid"></div>
 
-   ```js
-   const firebaseConfig = {
-     apiKey: "AIza...",
-     authDomain: "cadzand-huisje.firebaseapp.com",
-     projectId: "cadzand-huisje",
-     storageBucket: "cadzand-huisje.appspot.com",
-     messagingSenderId: "123456789",
-     appId: "1:123456789:web:abcdef",
-   };
-   ```
+      <div id="calendar-day-panel" class="day-panel"></div>
 
-5. Copy those values into `js/firebase-config.js` in this project, replacing the `"REPLACE_ME"` placeholders.
+      <button type="button" id="cal-add-toggle" class="add-toggle"></button>
 
-## Step 2: Turn on Firestore (the shared database)
+      <form id="booking-form" class="card-form">
+        <input type="text" id="booking-name" placeholder="Jouw naam" required />
+        <label>Aankomst <input type="date" id="booking-start" required /></label>
+        <label>Vertrek <input type="date" id="booking-end" required /></label>
+        <label>Aantal personen <input type="number" id="booking-people" min="1" max="20" placeholder="bijv. 4" /></label>
+        <label>Aantal kamers (max 4) <input type="number" id="booking-rooms" min="1" max="4" placeholder="bijv. 2" /></label>
+        <button type="submit">Verblijf boeken</button>
+      </form>
+      <div id="booking-warning" class="warning hidden">Let op: dit overlapt met een ander verblijf!</div>
+    </section>
 
-1. In the Firebase Console sidebar, click **Build → Firestore Database**.
-2. Click **Create database**, choose a location close to you (e.g. `europe-west`), and start in **test mode** for now.
-3. Once created, go to the **Rules** tab and paste in the contents of `firestore.rules` from this project, then click **Publish**.
+    <!-- SHOPPING TAB -->
+    <section id="tab-shopping" class="tab-panel">
+      <h2>Boodschappen</h2>
+      <form id="shopping-form" class="card-form">
+        <input type="text" id="shopping-input" placeholder="Iets toevoegen..." required />
+        <button type="submit">Toevoegen</button>
+      </form>
+      <ul id="shopping-list" class="item-list checklist"></ul>
+    </section>
 
-   This makes the database open to anyone with the app link — perfectly fine since you're only sharing the link with family.
+    <!-- TODO TAB -->
+    <section id="tab-todo" class="tab-panel">
+      <h2>To-do lijst</h2>
+      <form id="todo-form" class="card-form">
+        <input type="text" id="todo-input" placeholder="Wat moet er gebeuren?" required />
+        <input type="text" id="todo-assignee" placeholder="Toewijzen aan (optioneel)" />
+        <button type="submit">Toevoegen</button>
+      </form>
+      <ul id="todo-list" class="item-list checklist"></ul>
+    </section>
 
-That's it for Firebase! The Calendar, Shopping List, To-Do List, and Cleaning Schedule will now save and sync automatically for everyone using the app.
+    <!-- CLEANING TAB -->
+    <section id="tab-cleaning" class="tab-panel">
+      <h2>Schoonmaakrooster</h2>
+      <form id="cleaning-form" class="card-form">
+        <input type="text" id="cleaning-name" placeholder="Wie heeft schoongemaakt?" required />
+        <input type="date" id="cleaning-date" required />
+        <input type="text" id="cleaning-notes" placeholder="Wat is er gedaan? (optioneel)" />
+        <button type="submit">Toevoegen</button>
+      </form>
 
-## Step 3: Deploy to Netlify
+      <h3>Klassement</h3>
+      <ol id="cleaning-leaderboard" class="item-list"></ol>
 
-1. Push this project to your GitHub repository (Claude Code can do this for you).
-2. Go to https://app.netlify.com and sign in (you can sign in with GitHub).
-3. Click **Add new site → Import an existing project**, choose GitHub, and select this repository.
-4. Leave the build settings empty (there's no build step — it's plain HTML/CSS/JS) and click **Deploy**.
-5. Netlify gives you a URL like `https://cadzand-huisje.netlify.app`. That's the link to share with family!
+      <h3>Geschiedenis</h3>
+      <ul id="cleaning-history" class="item-list"></ul>
+    </section>
 
-Every time new code is pushed to GitHub, Netlify will automatically redeploy the site.
+    <!-- WEATHER TAB -->
+    <section id="tab-weather" class="tab-panel">
+      <h2>Weer &amp; Wind</h2>
+      <div id="weather-now" class="now-card">Weer laden...</div>
+      <div id="kite-status" class="kite-card">Kitecondities controleren...</div>
 
-## Step 4: Install it on your phone
+      <h3>Komende uren</h3>
+      <div id="wind-forecast" class="wind-forecast"></div>
 
-1. Open the Netlify URL on your phone in Safari (iPhone) or Chrome (Android).
-2. iPhone: tap the Share icon → "Add to Home Screen".
-   Android: tap the menu (⋮) → "Add to Home screen" / "Install app".
-3. You'll now have a Cadzand Huisje icon on your home screen like any other app!
+      <h3>5-daagse verwachting</h3>
+      <div id="weather-daily" class="daily-list"></div>
+    </section>
 
-## How the features work
+    <!-- INFO TAB -->
+    <section id="tab-info" class="tab-panel">
+      <div class="info-header">
+        <h2>Info Prinsestraat 22</h2>
+        <button type="button" id="info-edit-btn" class="icon-btn" aria-label="Bewerken"></button>
+      </div>
+      <div id="info-view" class="info-view"></div>
+      <form id="info-form" class="card-form"></form>
+    </section>
 
-- **Calendar** — anyone can add their stay (name + arrival/departure date). If a new booking overlaps an existing one, a warning appears so you can coordinate.
-- **Shopping List** — add items, check them off when bought. Anyone can delete an item once it's no longer needed.
-- **To-Do List** — add house tasks, optionally assign them to a family member, check off when done.
-- **Cleaning Schedule** — log who cleaned, when, and what they did. There's a leaderboard showing who has cleaned the most (for friendly bragging rights 🏆) and a full history below it.
-- **Weather & Wind** — pulls live weather and a 24-hour wind forecast for Cadzand from the free [Open-Meteo](https://open-meteo.com) API (no signup or API key needed). It also flags kite conditions:
-  - 🪁 **Great** — wind 14–30 knots, blowing onshore/cross-shore
-  - 🤔 **Maybe** — too light (10–14 kn) or strong (30–38 kn), or check carefully
-  - ⛔ **Not safe** — wind under 10 kn (too light), over 38 kn, or blowing offshore (south-ish, which can carry a kiter out to sea)
+  </main>
 
-  This is a simple guideline, not a substitute for checking real conditions and your own judgement on the beach.
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="calendar" data-icon="calendar"><span>Kalender</span></button>
+    <button class="tab-btn" data-tab="shopping" data-icon="cart"><span>Boodschappen</span></button>
+    <button class="tab-btn" data-tab="todo" data-icon="check"><span>To-do</span></button>
+    <button class="tab-btn" data-tab="cleaning" data-icon="broom"><span>Schoonmaak</span></button>
+    <button class="tab-btn" data-tab="weather" data-icon="wind"><span>Weer</span></button>
+    <button class="tab-btn" data-tab="info" data-icon="info"><span>Info</span></button>
+  </nav>
 
-## Notes for future changes
-
-- All shared data lives in Firestore collections: `bookings`, `shopping`, `todos`, `cleaning`.
-- There's no login system yet — everyone shares the same data, identified only by the name they type in. That keeps things simple for a small family group. If you ever want named accounts, Firebase Authentication can be added later.
-- The app works offline for viewing the app shell (thanks to the service worker), but live data (calendar, lists, weather) needs an internet connection to load and sync.
+  <script type="module" src="js/tabs.js"></script>
+  <script type="module" src="js/shopping.js"></script>
+  <script type="module" src="js/todo.js"></script>
+  <script type="module" src="js/cleaning.js"></script>
+  <script type="module" src="js/calendar.js"></script>
+  <script type="module" src="js/weather.js"></script>
+  <script type="module" src="js/info.js"></script>
+</body>
+</html>
